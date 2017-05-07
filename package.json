@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "aereal <aereal@aereal.org>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "python -m SimpleHTTPServer 8000"
+  }
 }
