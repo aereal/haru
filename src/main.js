@@ -199,7 +199,8 @@ new window.Vue({ // eslint-disable-line no-new
             case 'picked':
               const newPhotos = data.docs.map(d => {
                 return {
-                  url: d.thumbnails[0].url
+                  url: d.thumbnails[0].url,
+                  photoId: d.id
                 };
               });
               this.$data.photos = this.$data.photos.concat(newPhotos);
