@@ -78,26 +78,26 @@ const googleAuthProvider = new GoogleAuthProvider(googleApiProvider);
 class AccessTokenProvider {
 
   constructor(googleAuthProvider, clientId, scope) {
-    this._access_token = null;
-    this._client_id = clientId;
+    this._accessToken = null;
+    this._clientId = clientId;
     this._scope = scope;
     this.googleAuthProvider = googleAuthProvider;
   }
 
   get() {
-    if (this._access_token) {
-      return Promise.resolve(this._access_token);
+    if (this._accessToken) {
+      return Promise.resolve(this._accessToken);
     } else {
       return this.googleAuthProvider.get().then(auth => {
         return new Promise((ok, ng) => {
           auth.authorize({
-            client_id: this._client_id,
+            client_id: this._clientId,
             scope: this._scope,
             immediate: false
           }, authResult => {
             if (authResult && !authResult.error) {
-              this._access_token = authResult.access_token;
-              ok(this._access_token);
+              this._accessToken = authResult.access_token;
+              ok(this._accessToken);
             } else {
               ng(authResult.error);
             }
