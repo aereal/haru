@@ -8,6 +8,7 @@
         "Vue": true
     },
     "rules": {
-        "semi": 0
+        "semi": 0,
+        "promise/param-names": "off"
     }
 }
