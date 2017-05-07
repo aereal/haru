@@ -10,5 +10,6 @@
     "rules": {
         "semi": 0,
         "promise/param-names": "off"
-    }
+    },
+    "parser": "babel-eslint"
 }
