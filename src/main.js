@@ -174,6 +174,15 @@ const launchPicker = () => {
   });
 };
 
+const normalizeImageUrl = (url: string): string => {
+  return url.replace(/\/\w\d+(?:-\w+)?\//, '/');
+};
+
+const imageUrlInSize = (url: string, sizeQualifier: string): string => {
+  const idx = url.lastIndexOf('/');
+  return url.substring(0, idx) + '/' + sizeQualifier + url.substring(idx);
+};
+
 new window.Vue({ // eslint-disable-line no-new
   el: 'main',
   data: {
@@ -198,8 +207,11 @@ new window.Vue({ // eslint-disable-line no-new
           switch (data.action) {
             case 'picked':
               const newPhotos = data.docs.map(d => {
+                const normalized = normalizeImageUrl(d.thumbnails[0].url);
                 return {
-                  url: d.thumbnails[0].url,
+                  smallerUrl: imageUrlInSize(normalized, 's1024'),
+                  mediumUrl: imageUrlInSize(normalized, 's1920'),
+                  largerUrl: imageUrlInSize(normalized, 's0'),
                   photoId: d.id
                 };
               });

@@ -12,9 +12,15 @@
       <h1>Haru</h1>
       <main>
         <button class="btn btn-primary btn-lg btn-block" v-on:click="onLaunchPicker" v-bind:disabled="button.disabled">{{ button.text }}</button>
-        <span v-for="photo in photos" itemprop="http://schema.org/Photograph" itemscope>
-          <img v-bind:src="photo.url" itemprop="image" v-bind:data-photo-id="photo.photoId">
-        </span>
+        <div id="images">
+          <span v-for="photo in photos" itemprop="http://schema.org/Photograph" itemscope>
+            <picture v-bind:data-photo-id="photo.photoId">
+              <source media="(max-width: 640px)" v-bind:srcset="photo.smallerUrl">
+              <source media="(max-width: 1024px)" v-bind:srcset="photo.mediumUrl">
+              <img v-bind:src="photo.largerUrl" itemprop="image">
+            </picture>
+          </span>
+        </div>
       </main>
     </div>
     <script src="scripts/main.js"></script>
