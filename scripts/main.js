@@ -1,13 +1,10 @@
-// @flow
-
 class GoogleApiProvider {
-  _gapi: ?any;
 
-  constructor () {
+  constructor() {
     this._gapi = null;
   }
 
-  get () {
+  get() {
     if (this._gapi) {
       return Promise.resolve(this._gapi);
     } else {
@@ -27,15 +24,13 @@ class GoogleApiProvider {
 const googleApiProvider = new GoogleApiProvider();
 
 class GooglePickerProvider {
-  _picker: ?any;
-  googleApiProvider: GoogleApiProvider;
 
-  constructor (googleApiProvider) {
+  constructor(googleApiProvider) {
     this._picker = null;
     this.googleApiProvider = googleApiProvider;
   }
 
-  get () {
+  get() {
     if (this._picker) {
       return Promise.resolve(this._picker);
     } else {
@@ -46,7 +41,7 @@ class GooglePickerProvider {
               this._picker = window.google.picker;
               ok(this._picker);
             }
-          })
+          });
         });
       });
     }
@@ -55,15 +50,13 @@ class GooglePickerProvider {
 const googlePickerProvider = new GooglePickerProvider(googleApiProvider);
 
 class GoogleAuthProvider {
-  _auth: ?any;
-  googleApiProvider: GoogleApiProvider;
 
-  constructor (googleApiProvider) {
+  constructor(googleApiProvider) {
     this._auth = null;
     this.googleApiProvider = googleApiProvider;
   }
 
-  get () {
+  get() {
     if (this._auth) {
       return Promise.resolve(this._auth);
     } else {
@@ -74,7 +67,7 @@ class GoogleAuthProvider {
               this._auth = window.gapi.auth;
               ok(this._auth);
             }
-          })
+          });
         });
       });
     }
@@ -83,19 +76,15 @@ class GoogleAuthProvider {
 const googleAuthProvider = new GoogleAuthProvider(googleApiProvider);
 
 class AccessTokenProvider {
-  _access_token: ?string;
-  _client_id: string;
-  _scope: string[];
-  googleAuthProvider: GoogleAuthProvider;
 
-  constructor (googleAuthProvider, clientId, scope) {
+  constructor(googleAuthProvider, clientId, scope) {
     this._access_token = null;
     this._client_id = clientId;
     this._scope = scope;
     this.googleAuthProvider = googleAuthProvider;
   }
 
-  get () {
+  get() {
     if (this._access_token) {
       return Promise.resolve(this._access_token);
     } else {
@@ -105,7 +94,7 @@ class AccessTokenProvider {
             client_id: this._client_id,
             scope: this._scope,
             immediate: false
-          }, (authResult) => {
+          }, authResult => {
             if (authResult && !authResult.error) {
               this._access_token = authResult.access_token;
               ok(this._access_token);
@@ -118,58 +107,33 @@ class AccessTokenProvider {
     }
   }
 }
-const accessTokenProvider = new AccessTokenProvider(
-  googleAuthProvider,
-  '392026323976-d2fbp7qcd7en6294f6mpp2fk1ob4gcql.apps.googleusercontent.com',
-  ['https://www.googleapis.com/auth/photos']
-);
+const accessTokenProvider = new AccessTokenProvider(googleAuthProvider, '392026323976-d2fbp7qcd7en6294f6mpp2fk1ob4gcql.apps.googleusercontent.com', ['https://www.googleapis.com/auth/photos']);
 
 class GooglePickerBuilderProvider {
-  googlePickerProvider: GooglePickerProvider;
-  accessTokenProvider: AccessTokenProvider;
-  _developerKey: string;
-  _builder: ?any;
 
-  constructor (googlePickerProvider, accessTokenProvider, developerKey) {
+  constructor(googlePickerProvider, accessTokenProvider, developerKey) {
     this.googlePickerProvider = googlePickerProvider;
     this.accessTokenProvider = accessTokenProvider;
     this._developerKey = developerKey;
     this._builder = null;
   }
 
-  get () {
+  get() {
     if (this._builder) {
       return Promise.resolve(this._builder);
     } else {
-      return Promise.all([
-        this.googlePickerProvider.get(),
-        this.accessTokenProvider.get()
-      ]).then(([ picker, accessToken ]) => {
-        return new picker.PickerBuilder()
-          .setOAuthToken(accessToken)
-          .setDeveloperKey(this._developerKey);
+      return Promise.all([this.googlePickerProvider.get(), this.accessTokenProvider.get()]).then(([picker, accessToken]) => {
+        return new picker.PickerBuilder().setOAuthToken(accessToken).setDeveloperKey(this._developerKey);
       });
     }
   }
 }
-const googlePickerBuilderProvider = new GooglePickerBuilderProvider(
-  googlePickerProvider,
-  accessTokenProvider,
-  'AIzaSyBvZFemCoOg3sdZHDXhmxNFi33fOItzo-k'
-);
+const googlePickerBuilderProvider = new GooglePickerBuilderProvider(googlePickerProvider, accessTokenProvider, 'AIzaSyBvZFemCoOg3sdZHDXhmxNFi33fOItzo-k');
 
 const launchPicker = () => {
-  return Promise.all([
-    googlePickerBuilderProvider.get(),
-    googlePickerProvider.get()
-  ]).then(([builder, { PhotosView, ViewId, Feature }]) => {
-    const photosView = new PhotosView()
-      .setType('camerasync');
-    const picker = builder
-      .addView(ViewId.PHOTOS)
-      .addView(photosView)
-      .enableFeature(Feature.MULTISELECT_ENABLED)
-      .build();
+  return Promise.all([googlePickerBuilderProvider.get(), googlePickerProvider.get()]).then(([builder, { PhotosView, ViewId, Feature }]) => {
+    const photosView = new PhotosView().setType('camerasync');
+    const picker = builder.addView(ViewId.PHOTOS).addView(photosView).enableFeature(Feature.MULTISELECT_ENABLED).build();
     return picker;
   });
 };
@@ -184,7 +148,7 @@ new window.Vue({ // eslint-disable-line no-new
     photos: []
   },
   methods: {
-    onLaunchPicker () {
+    onLaunchPicker() {
       this.$data.button = {
         text: 'Waiting...',
         disabled: true
