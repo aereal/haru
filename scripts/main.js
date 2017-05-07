@@ -154,7 +154,7 @@ const launchPicker = () => {
   });
 };
 
-new Vue({
+new Vue({ // eslint-disable-line no-new
   el: 'main',
   data: {
     button: {
