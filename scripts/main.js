@@ -1,9 +1,9 @@
 class GoogleApiProvider {
-  constructor() {
+  constructor () {
     this._gapi = null;
   }
 
-  get() {
+  get () {
     if (this._gapi) {
       return Promise.resolve(this._gapi);
     } else {
@@ -23,12 +23,12 @@ class GoogleApiProvider {
 const googleApiProvider = new GoogleApiProvider();
 
 class GooglePickerProvider {
-  constructor(googleApiProvider) {
+  constructor (googleApiProvider) {
     this._picker = null;
     this.googleApiProvider = googleApiProvider;
   }
 
-  get() {
+  get () {
     if (this._picker) {
       return Promise.resolve(this._picker);
     } else {
@@ -38,7 +38,7 @@ class GooglePickerProvider {
             callback: () => {
               this._picker = window.google.picker;
               ok(this._picker);
-            },
+            }
           })
         });
       });
@@ -48,12 +48,12 @@ class GooglePickerProvider {
 const googlePickerProvider = new GooglePickerProvider(googleApiProvider);
 
 class GoogleAuthProvider {
-  constructor(googleApiProvider) {
+  constructor (googleApiProvider) {
     this._auth = null;
     this.googleApiProvider = googleApiProvider;
   }
 
-  get() {
+  get () {
     if (this._auth) {
       return Promise.resolve(this._auth);
     } else {
@@ -63,7 +63,7 @@ class GoogleAuthProvider {
             callback: () => {
               this._auth = window.gapi.auth;
               ok(this._auth);
-            },
+            }
           })
         });
       });
@@ -73,14 +73,14 @@ class GoogleAuthProvider {
 const googleAuthProvider = new GoogleAuthProvider(googleApiProvider);
 
 class AccessTokenProvider {
-  constructor(googleAuthProvider, clientId, scope) {
+  constructor (googleAuthProvider, clientId, scope) {
     this._access_token = null;
     this._client_id = clientId;
     this._scope = scope;
     this.googleAuthProvider = googleAuthProvider;
   }
 
-  get() {
+  get () {
     if (this._access_token) {
       return Promise.resolve(this._access_token);
     } else {
@@ -89,7 +89,7 @@ class AccessTokenProvider {
           auth.authorize({
             client_id: this._client_id,
             scope: this._scope,
-            immediate: false,
+            immediate: false
           }, (authResult) => {
             if (authResult && !authResult.error) {
               this._access_token = authResult.access_token;
@@ -110,14 +110,14 @@ const accessTokenProvider = new AccessTokenProvider(
 );
 
 class GooglePickerBuilderProvider {
-  constructor(googlePickerProvider, accessTokenProvider, developerKey) {
+  constructor (googlePickerProvider, accessTokenProvider, developerKey) {
     this.googlePickerProvider = googlePickerProvider;
     this.accessTokenProvider = accessTokenProvider;
     this._developerKey = developerKey;
     this._builder = null;
   }
 
-  get() {
+  get () {
     if (this._builder) {
       return Promise.resolve(this._builder);
     } else {
@@ -125,9 +125,9 @@ class GooglePickerBuilderProvider {
         this.googlePickerProvider.get(),
         this.accessTokenProvider.get()
       ]).then(([ picker, accessToken ]) => {
-        return new picker.PickerBuilder().
-          setOAuthToken(accessToken).
-          setDeveloperKey(this._developerKey);
+        return new picker.PickerBuilder()
+          .setOAuthToken(accessToken)
+          .setDeveloperKey(this._developerKey);
       });
     }
   }
@@ -141,15 +141,15 @@ const googlePickerBuilderProvider = new GooglePickerBuilderProvider(
 const launchPicker = () => {
   return Promise.all([
     googlePickerBuilderProvider.get(),
-    googlePickerProvider.get(),
+    googlePickerProvider.get()
   ]).then(([builder, { PhotosView, ViewId, Feature }]) => {
-    const photosView = new PhotosView().
-      setType('camerasync');
-    const picker = builder.
-      addView(ViewId.PHOTOS).
-      addView(photosView).
-      enableFeature(Feature.MULTISELECT_ENABLED).
-      build();
+    const photosView = new PhotosView()
+      .setType('camerasync');
+    const picker = builder
+      .addView(ViewId.PHOTOS)
+      .addView(photosView)
+      .enableFeature(Feature.MULTISELECT_ENABLED)
+      .build();
     return picker;
   });
 };
@@ -159,35 +159,35 @@ new Vue({
   data: {
     button: {
       text: 'Pick',
-      disabled: false,
+      disabled: false
     },
-    photos: [],
+    photos: []
   },
   methods: {
-    onLaunchPicker() {
+    onLaunchPicker () {
       this.$data.button = {
         text: 'Waiting...',
-        disabled: true,
+        disabled: true
       };
       launchPicker().then(picker => {
         this.$data.button = {
           text: 'Pick',
-          disabled: false,
+          disabled: false
         };
         picker.setCallback(data => {
           switch (data.action) {
-          case 'picked':
-            const newPhotos = data.docs.map(d => {
-              return {
-                url: d.thumbnails[0].url,
-              };
-            });
-            this.$data.photos = this.$data.photos.concat(newPhotos);
-            break;
+            case 'picked':
+              const newPhotos = data.docs.map(d => {
+                return {
+                  url: d.thumbnails[0].url
+                };
+              });
+              this.$data.photos = this.$data.photos.concat(newPhotos);
+              break;
           }
         });
         picker.setVisible(true);
       });
-    },
-  },
+    }
+  }
 });
