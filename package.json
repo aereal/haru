@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "python -m SimpleHTTPServer 8000",
-    "lint": "eslint scripts/",
-    "lint:fix": "eslint --fix scripts/"
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
