@@ -1,4 +1,8 @@
+// @flow
+
 class GoogleApiProvider {
+  _gapi: ?any;
+
   constructor () {
     this._gapi = null;
   }
@@ -23,6 +27,9 @@ class GoogleApiProvider {
 const googleApiProvider = new GoogleApiProvider();
 
 class GooglePickerProvider {
+  _picker: ?any;
+  googleApiProvider: GoogleApiProvider;
+
   constructor (googleApiProvider) {
     this._picker = null;
     this.googleApiProvider = googleApiProvider;
@@ -48,6 +55,9 @@ class GooglePickerProvider {
 const googlePickerProvider = new GooglePickerProvider(googleApiProvider);
 
 class GoogleAuthProvider {
+  _auth: ?any;
+  googleApiProvider: GoogleApiProvider;
+
   constructor (googleApiProvider) {
     this._auth = null;
     this.googleApiProvider = googleApiProvider;
@@ -73,6 +83,11 @@ class GoogleAuthProvider {
 const googleAuthProvider = new GoogleAuthProvider(googleApiProvider);
 
 class AccessTokenProvider {
+  _access_token: ?string;
+  _client_id: string;
+  _scope: string[];
+  googleAuthProvider: GoogleAuthProvider;
+
   constructor (googleAuthProvider, clientId, scope) {
     this._access_token = null;
     this._client_id = clientId;
@@ -110,6 +125,11 @@ const accessTokenProvider = new AccessTokenProvider(
 );
 
 class GooglePickerBuilderProvider {
+  googlePickerProvider: GooglePickerProvider;
+  accessTokenProvider: AccessTokenProvider;
+  _developerKey: string;
+  _builder: ?any;
+
   constructor (googlePickerProvider, accessTokenProvider, developerKey) {
     this.googlePickerProvider = googlePickerProvider;
     this.accessTokenProvider = accessTokenProvider;
@@ -154,7 +174,7 @@ const launchPicker = () => {
   });
 };
 
-new Vue({ // eslint-disable-line no-new
+new window.Vue({ // eslint-disable-line no-new
   el: 'main',
   data: {
     button: {
