@@ -13,7 +13,7 @@
       <main>
         <button class="btn btn-primary btn-lg btn-block" v-on:click="onLaunchPicker" v-bind:disabled="button.disabled">{{ button.text }}</button>
         <div id="images">
-          <span v-for="photo in photos" itemprop="http://schema.org/Photograph" itemscope>
+          <span v-for="photo in photos" itemtype="http://schema.org/Photograph" itemscope>
             <picture v-bind:data-photo-id="photo.photoId">
               <source media="(max-width: 640px)" v-bind:srcset="photo.smallerUrl">
               <source media="(max-width: 1024px)" v-bind:srcset="photo.mediumUrl">
