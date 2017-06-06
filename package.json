@@ -10,7 +10,7 @@
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "compile": "webpack --config config/webpack.dev.js",
-    "compile:watch": "babel --watch -d scripts/ src/"
+    "compile:watch": "webpack --config config/webpack.dev.js --watch"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -27,6 +27,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "flow-bin": "^0.45.0",
+    "npm-run-all": "^4.0.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "webpack": "^2.6.1"
