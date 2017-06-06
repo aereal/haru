@@ -5,7 +5,8 @@
   "author": "aereal <aereal@aereal.org>",
   "license": "MIT",
   "scripts": {
-    "start": "python -m SimpleHTTPServer 8000",
+    "start": "run-p server compile:watch",
+    "server": "python -m SimpleHTTPServer 8000",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "compile": "babel -d scripts/ src/",
