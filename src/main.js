@@ -183,14 +183,30 @@ const imageUrlInSize = (url: string, sizeQualifier: string): string => {
   return url.substring(0, idx) + '/' + sizeQualifier + url.substring(idx);
 };
 
+const photosStore = {
+  state: {
+    photos: [],
+  },
+  addPhotos(photos) {
+    this.state.photos = this.state.photos.concat(photos);
+  },
+};
+
+new window.Vue({
+  el: '#images',
+  data: {
+    store: photosStore,
+  },
+});
+
 new window.Vue({ // eslint-disable-line no-new
-  el: 'main',
+  el: '#picker',
   data: {
     button: {
       text: 'Pick',
       disabled: false
     },
-    photos: []
+    store: photosStore,
   },
   methods: {
     onLaunchPicker () {
@@ -215,12 +231,12 @@ new window.Vue({ // eslint-disable-line no-new
                   photoId: d.id
                 };
               });
-              this.$data.photos = this.$data.photos.concat(newPhotos);
+              this.$data.store.addPhotos(newPhotos);
               break;
           }
         });
         picker.setVisible(true);
       });
     }
-  }
+  },
 });
