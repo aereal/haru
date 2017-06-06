@@ -39,18 +39,32 @@ class PhotoComponent extends React.PureComponent {
 }
 
 class PhotosListComponent extends React.PureComponent {
+  imagesEl: HTMLElement;
+
   props: {
     photos: Photo[],
+    updateHTML: (string) => void,
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    const html = this.imagesEl.innerHTML;
+    this.props.updateHTML(html);
+  }
 
   render() {
     return (
-      <div id="images">
+      <div id="images" ref={(el) => this.imagesEl = el}>
         {this.props.photos.map((photo, idx) => <PhotoComponent photo={photo} key={idx} />)}
       </div>
     );
   }
 }
+
+const PhotoHTMLComponent = ({ html }: { html: string }) => {
+  return (
+    <textarea className="form-control input-lg" readOnly={true} value={html}></textarea>
+  );
+};
 
 class PhotoPickerComponent extends React.PureComponent {
   props: {
@@ -110,12 +124,14 @@ class RootComponent extends React.PureComponent {
 
   state: {
     photos: Photo[],
+    html: string,
   };
 
   constructor(props) {
     super(props);
     this.state = {
       photos: [],
+      html: '',
     };
   }
 
@@ -139,13 +155,17 @@ class RootComponent extends React.PureComponent {
     const addPhotos = (photos: Photo[]) => {
       this.setState({ photos });
     };
+    const updateHTML = (html: string) => {
+      this.setState({ html });
+    };
     return (
       <div>
         <PhotoPickerComponent
           launchPicker={() => this.launchPicker()}
           addPhotos={addPhotos}
         />
-        <PhotosListComponent photos={this.state.photos} />
+        <PhotoHTMLComponent html={this.state.html} />
+        <PhotosListComponent photos={this.state.photos} updateHTML={updateHTML} />
       </div>
     );
   }
