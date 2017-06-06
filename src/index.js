@@ -62,7 +62,7 @@ class PhotosListComponent extends React.PureComponent {
 
 const PhotoHTMLComponent = ({ html }: { html: string }) => {
   return (
-    <textarea className="form-control input-lg" readOnly={true} value={html}></textarea>
+    <textarea onClick={(ev) => ev.target.select()} className="form-control input-lg" readOnly={true} value={html}></textarea>
   );
 };
 
